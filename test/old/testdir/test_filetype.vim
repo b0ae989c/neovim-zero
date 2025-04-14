@@ -181,7 +181,7 @@ func s:GetFilenameChecks() abort
     \ 'cobol': ['file.cbl', 'file.cob'],
     \ 'coco': ['file.atg'],
     \ 'conaryrecipe': ['file.recipe'],
-    \ 'conf': ['auto.master', 'file.conf', 'texdoc.cnf', '.x11vncrc', '.chktexrc', '.ripgreprc', 'ripgreprc', 'file.ctags', '.mbsyncrc'],
+    \ 'conf': ['auto.master', 'file.conf', 'texdoc.cnf', '.x11vncrc', '.chktexrc', '.ripgreprc', 'ripgreprc', 'file.ctags'],
     \ 'config': ['configure.in', 'configure.ac', '/etc/hostname.file', 'any/etc/hostname.file'],
     \ 'confini': ['pacman.conf', 'paru.conf', 'mpv.conf', 'any/.aws/config', 'any/.aws/credentials', 'file.nmconnection'],
     \ 'context': ['tex/context/any/file.tex', 'file.mkii', 'file.mkiv', 'file.mkvi', 'file.mkxl', 'file.mklx'],
@@ -469,6 +469,7 @@ func s:GetFilenameChecks() abort
     \ 'matlab': ['file.m'],
     \ 'maxima': ['file.demo', 'file.dmt', 'file.dm1', 'file.dm2', 'file.dm3',
     \            'file.wxm', 'maxima-init.mac'],
+    \ 'mbsync': ['.mbsyncrc', 'file.mbsyncrc', 'isyncrc'],
     \ 'mediawiki': ['file.mw', 'file.wiki'],
     \ 'mel': ['file.mel'],
     \ 'mermaid': ['file.mmd', 'file.mmdc', 'file.mermaid'],
@@ -572,7 +573,6 @@ func s:GetFilenameChecks() abort
     \ 'opl': ['file.OPL', 'file.OPl', 'file.OpL', 'file.Opl', 'file.oPL', 'file.oPl', 'file.opL', 'file.opl'],
     \ 'ora': ['file.ora'],
     \ 'org': ['file.org', 'file.org_archive'],
-    \ 'pacmanlog': ['pacman.log'],
     \ 'pamconf': ['/etc/pam.conf', '/etc/pam.d/file', 'any/etc/pam.conf', 'any/etc/pam.d/file'],
     \ 'pamenv': ['/etc/security/pam_env.conf', '/home/user/.pam_environment', '.pam_environment', 'pam_env.conf'],
     \ 'pandoc': ['file.pandoc', 'file.pdk', 'file.pd', 'file.pdc'],
@@ -2809,6 +2809,7 @@ func Test_pro_file()
   call writefile(['x = findgen(100)/10'], 'Xfile.pro', 'D')
   split Xfile.pro
   call assert_equal('idlang', &filetype)
+  bwipe!
 
   filetype off
 endfunc
@@ -2842,6 +2843,7 @@ func Test_pl_file()
   call writefile(['%data = (1, 2, 3);'], 'Xfile.pl', 'D')
   split Xfile.pl
   call assert_equal('perl', &filetype)
+  bwipe!
 
   filetype off
 endfunc
@@ -2889,6 +2891,18 @@ func Test_org_file()
   call assert_equal('org', &filetype)
   bwipe!
 
+  filetype off
+endfunc
+
+" Filetypes detected from names of existing files
+func Test_pacmanlog()
+  filetype on
+  for fname in ['pacman.log', 'pacman.log.1', 'pacman.log-20250123']
+    call writefile(["[2025-01-23T01:23:45+0000] [PACMAN] Running 'pacman -S -y --config /etc/pacman.conf --'"], fname, 'D')
+    exe 'split ' .. fname
+    call assert_equal('pacmanlog', &filetype, 'for text: ' .. string(fname))
+    bwipe!
+  endfor
   filetype off
 endfunc
 
