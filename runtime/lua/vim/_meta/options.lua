@@ -2084,6 +2084,15 @@ vim.bo.et = vim.bo.expandtab
 --- - 'exrc' can execute any code; editorconfig only specifies settings.
 --- - 'exrc' is Nvim-specific; editorconfig works in other editors.
 ---
+--- To achieve project-local LSP configuration:
+--- 1. Enable 'exrc'.
+--- 2. Place LSP configs at ".nvim/lsp/*.lua" in your project root.
+--- 3. Create ".nvim.lua" in your project root directory with this line:
+---
+--- ```lua
+---      vim.cmd[[set runtimepath+=.nvim]]
+--- ```
+---
 --- This option cannot be set from a `modeline` or in the `sandbox`, for
 --- security reasons.
 ---
@@ -2336,7 +2345,7 @@ vim.bo.ft = vim.bo.filetype
 ---   lastline	'@'		'display' contains lastline/truncate
 ---   trunc		'>'		truncated text in the
 --- 				`ins-completion-menu`.
----   truncrl	'<'		same as "trunc' in 'rightleft' mode
+---   truncrl	'<'		same as "trunc" in 'rightleft' mode
 ---
 --- Any one that is omitted will fall back to the default.
 ---
@@ -3428,6 +3437,31 @@ vim.o.infercase = false
 vim.o.inf = vim.o.infercase
 vim.bo.infercase = vim.o.infercase
 vim.bo.inf = vim.bo.infercase
+
+--- Defines characters and patterns for completion in insert mode.  Used
+--- by the `complete_match()` function to determine the starting position
+--- for completion.  This is a comma-separated list of triggers.  Each
+--- trigger can be:
+--- - A single character like "." or "/"
+--- - A sequence of characters like "->", "/*", or "/**"
+---
+--- Note: Use "\\," to add a literal comma as trigger character, see
+--- `option-backslash`.
+---
+--- Examples:
+---
+--- ```vim
+---     set isexpand=.,->,/*,\\,
+--- ```
+---
+---
+--- @type string
+vim.o.isexpand = ""
+vim.o.ise = vim.o.isexpand
+vim.bo.isexpand = vim.o.isexpand
+vim.bo.ise = vim.bo.isexpand
+vim.go.isexpand = vim.o.isexpand
+vim.go.ise = vim.go.isexpand
 
 --- The characters specified by this option are included in file names and
 --- path names.  Filenames are used for commands like "gf", "[i" and in
@@ -5441,8 +5475,8 @@ vim.go.ssop = vim.go.sessionoptions
 --- '	Maximum number of previously edited files for which the marks
 --- 	are remembered.  This parameter must always be included when
 --- 	'shada' is non-empty.
---- 	Including this item also means that the `jumplist` and the
---- 	`changelist` are stored in the shada file.
+--- 	If non-zero, then the `jumplist` and the `changelist` are also
+--- 	stored in the shada file.
 --- 						*shada-/*
 --- /	Maximum number of items in the search pattern history to be
 --- 	saved.  If non-zero, then the previous search and substitute
@@ -6442,8 +6476,7 @@ vim.o.stc = vim.o.statuscolumn
 vim.wo.statuscolumn = vim.o.statuscolumn
 vim.wo.stc = vim.wo.statuscolumn
 
---- When non-empty, this option determines the content of the status line.
---- Also see `status-line`.
+--- Sets the `status-line`.
 ---
 --- The option consists of printf style '%' items interspersed with
 --- normal text.  Each status line item is of the form:
@@ -7004,7 +7037,8 @@ vim.bo.tc = vim.bo.tagcase
 vim.go.tagcase = vim.o.tagcase
 vim.go.tc = vim.go.tagcase
 
---- This option specifies a function to be used to perform tag searches.
+--- This option specifies a function to be used to perform tag searches
+--- (including `taglist()`).
 --- The function gets the tag pattern and should return a List of matching
 --- tags.  See `tag-function` for an explanation of how to write the
 --- function and an example.  The value can be the name of a function, a
@@ -7846,8 +7880,8 @@ vim.go.wmnu = vim.go.wildmenu
 --- ```vim
 --- 	set wildmode=noselect:full
 --- ```
---- Show 'wildmenu' without completing or selecting on first press
---- Cycle full matches on second press
+--- First press: show 'wildmenu' without completing or selecting
+--- Second press: cycle full matches
 ---
 --- ```vim
 --- 	set wildmode=noselect:lastused,full
