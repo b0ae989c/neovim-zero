@@ -3652,7 +3652,7 @@ M.funcs = {
     name = 'getcharstr',
     params = { { 'expr', '-1|0|1' }, { 'opts', 'table' } },
     returns = 'string',
-    signature = 'getcharstr([{expr}])',
+    signature = 'getcharstr([{expr} [, {opts}]])',
   },
   getcmdcomplpat = {
     desc = [=[
@@ -13239,7 +13239,7 @@ M.funcs = {
     ]=],
     name = 'winlayout',
     params = { { 'tabnr', 'integer' } },
-    returns = 'any[]',
+    returns = 'vim.fn.winlayout.ret',
     signature = 'winlayout([{tabnr}])',
   },
   winline = {
